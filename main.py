@@ -1,22 +1,33 @@
 import re
 
-def day01(name):
+num_dict = {
+    "one" : 1,
+    "two" : 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine" : 9,
+    "ten": 10
+}
+
+
+def day01():
      with open("inputs/day01","r") as f:
-        total = sum([calibration_value(it) for it in f])
+        total = sum([calibration_value_part2(it) for it in f])
         print(total)
 
 
-def calibration_value(txt):
-    first_idx = re.search("\d", txt).start()
-    last_idx = re.search("\d", txt[::-1]).start()
-    c = int(f"{txt[first_idx]}{txt[::-1][last_idx]}")
-    print(c)
-    return c
+def calibration_value_part2(txt):
+    res = re.findall("\d|one|two|three|four|five|six|seven|eight|nine", txt)
+    first = num_dict.get(res[0], res[0])
+    last = num_dict.get(res[-1], res[-1])
+    c = f"{first}{last}"
+    return int(c)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    day01('PyCharm')
-    print(calibration_value("asdf ai7asdf a3i"))
+    day01()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
