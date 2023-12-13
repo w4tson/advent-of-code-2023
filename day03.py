@@ -1,4 +1,6 @@
 import re
+from operator import mul
+from functools import reduce
 
 
 def flatten_lists(a):
@@ -8,6 +10,7 @@ def flatten_lists(a):
                 yield x
     else:
         yield a
+
 
 def calc_maps(input):
     parts_map = {}
@@ -35,21 +38,22 @@ def day03_part2(input):
     parts_map, coords_map = calc_maps(input)
 
     stars = [k for k, v in parts_map.items() if v == '*']
-    symbols = [k for k, v in parts_map.items() if not v.isdigit()]
-
-    # all_coords = list(flatten_lists([surround_coords(*coord) for coord in stars]))
-    symbol_coords = [coord for coord, index in coords_map.items() if index in symbols]
-
     stars_coords = [coord for coord, index in coords_map.items() if index in stars]
-    print(f"stars ={stars_coords}")
-    # print(symbol_coords)
-    all_coords = list(flatten_lists([surround_coords(*coord) for coord in symbol_coords if coordsd]))
-    print_map(all_coords, coords_map, parts_map)
+    all_coords = list([surround_coords(*coord) for coord in stars_coords])
 
-    for
+    total = 0
 
-    # matched_indexes = set([coords_map[coord] for coord in all_coords if coords_map.get(coord) is not None])
-    # print(sum([int(parts_map[index]) for index in matched_indexes]))
+    for surrounding_coord_list in all_coords:
+        unique_parts = []
+        for coord in surrounding_coord_list:
+            if coords_map.get(coord) is not None:
+                unique_parts += [coords_map[coord]]
+
+        if len(list(set(unique_parts))) == 2:
+            s = list(set(unique_parts))
+            total += (int(parts_map[s[0]]) * int(parts_map[s[1]]))
+
+    print(total)
 
 
 def print_map(all_coords, coords_map, parts_map):
@@ -60,9 +64,9 @@ def print_map(all_coords, coords_map, parts_map):
     skip = []
     print(f"all-coords = {all_coords}")
     print(all_coords_map)
-    for y in range(maxy+1):
-        for x in range(maxx+1):
-            if (x,y) in all_coords:
+    for y in range(maxy + 1):
+        for x in range(maxx + 1):
+            if (x, y) in all_coords:
                 print("\x1b[1;32m", end='')
 
             if len(skip) > 0:
@@ -87,35 +91,32 @@ def print_map(all_coords, coords_map, parts_map):
 
 def surround_coords(x, y):
     surrounding = [
-        (x-1, y),
-        (x+1, y),
-        (x, y-1),
-        (x, y+1),
-        (x-1, y-1),
-        (x+1, y-1),
-        (x-1, y+1),
-        (x+1, y+1)
+        (x - 1, y),
+        (x + 1, y),
+        (x, y - 1),
+        (x, y + 1),
+        (x - 1, y - 1),
+        (x + 1, y - 1),
+        (x - 1, y + 1),
+        (x + 1, y + 1)
     ]
 
     return surrounding
 
 
 def to_row(r, y_index, parts_map):
-    index = max(parts_map.keys()) + 1  if len(parts_map.keys()) > 0 else 0
+    index = max(parts_map.keys()) + 1 if len(parts_map.keys()) > 0 else 0
     coords_map = {}
 
     for match in re.finditer('(\d+|[^.])', r.strip()):
         new_dict = dict([((x, y_index), index) for x in range(match.start(), match.end())])
         coords_map = coords_map | new_dict
-        parts_map[index]=match.group()
+        parts_map[index] = match.group()
         index += 1
 
     return coords_map, parts_map
 
 
 if __name__ == '__main__':
-    with open('inputs/day03','r') as f:
+    with open('inputs/day03', 'r') as f:
         day03_part2(f)
-
-
-
