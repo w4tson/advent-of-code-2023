@@ -27,7 +27,7 @@ fun part1(input : String) {
 EOF
 
 cat << EOF > $TEST_DIR/day${next_day}/Day${next_day}Test.kt
-package aoc.day${next_day}
+package com.aoc.day${next_day}
 
 import Util.Companion.readInput
 import org.junit.jupiter.api.Assertions.*
