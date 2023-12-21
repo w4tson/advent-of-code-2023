@@ -28,5 +28,9 @@ class Day06Test {
         part1(actualStr)
     }
 
+    @Test
+    fun test2() {
+        part2(actualStr)
+    }
 }
 
