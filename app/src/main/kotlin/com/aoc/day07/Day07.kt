@@ -1,9 +1,14 @@
 package com.aoc.day07
 
+import com.aoc.day07.Card.CARD_A
+import com.aoc.day07.Card.CARD_J
 import com.aoc.day07.HandType.*
 import takeWhileInclusive
 
+
+//TODO: wont work with part1 anymore, can't be bothered refactoring so it works with both
 enum class Card {
+    CARD_J,
     CARD_2,
     CARD_3,
     CARD_4,
@@ -13,7 +18,6 @@ enum class Card {
     CARD_8,
     CARD_9,
     CARD_T,
-    CARD_J,
     CARD_Q,
     CARD_K,
     CARD_A;
@@ -62,7 +66,17 @@ fun part1(input : String) {
 
 data class Hand(val cards: List<Card>) : Comparable<Hand> {
     fun handType() : HandType {
-        val groupBy = cards.groupBy { it }.map { (k,v) -> Pair(k, v.size) }.toMap()
+        val groupBy = cards.groupBy { it }.map { (k,v) -> Pair(k, v.size) }.toMap().toMutableMap()
+        if (groupBy.contains(CARD_J)) {
+            val i = groupBy[CARD_J]!!
+            println(cards)
+            groupBy.filter { it.key != CARD_J }.maxByOrNull { it.value }?.let { cardToInc ->
+                groupBy.computeIfPresent(cardToInc.key){ _,b -> b+i }
+            } ?: run {
+                groupBy.put(CARD_A, i)
+            }
+            groupBy.remove(CARD_J)
+        }
 
         return if (groupBy.values.contains(5)) {
             FiveOfAKind

@@ -24,5 +24,10 @@ class Day07Test {
         part1(input)
     }
 
+    @Test
+    fun name() {
+        val handType = "JJJJJ".toHand().handType()
+        println("handType = ${handType}")
+    }
 }
 
