@@ -327,3 +327,52 @@ fun String.chunkLinesBy(p : (s : String) -> Boolean) : List<String> {
 fun String.chunkByEmptyLine() = this.chunkLinesBy { it.trim().isEmpty() }
 
 fun String.stripAndLastToInt() : Int = split(" ").last().toInt()
+
+/**
+ * Return r length [List]s of T from this List which are emitted in lexicographic sort order.
+ * So, if the input iterable is sorted, the combination tuples will be produced in sorted order.
+ * Elements are treated as unique based on their position, not on their value.
+ * So if the input elements are unique, there will be no repeat values in each combination.
+ *
+ * @param r How many elements to pick
+ * @param replace elements are replaced after being chosen
+ *
+ * @return [Sequence] of all possible combinations of length r
+ */
+fun <T : Any> List<T>.combinations(r: Int, replace: Boolean = false): Sequence<List<T>> {
+    val n = count()
+    if (r > n) return sequenceOf()
+    return sequence {
+        var indices = if (replace) 0.repeat(r).toMutableList() else (0 until r).toMutableList()
+        while (true) {
+            yield(indices.map { this@combinations[it] })
+            var i = r - 1
+            loop@ while (i >= 0) {
+                when (replace) {
+                    true -> if (indices[i] != n - 1) break@loop
+                    false -> if (indices[i] != i + n - r) break@loop
+                }
+                i--
+            }
+            if (i < 0) break
+            when (replace) {
+                true -> indices = (indices.take(i) + (indices[i] + 1).repeat(r - i)).toMutableList()
+                false -> {
+                    indices[i] += 1
+                    (i + 1 until r).forEach { indices[it] = indices[it - 1] + 1 }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Make a [Sequence] that returns object over and over again.
+ * Runs indefinitely unless the [times] argument is specified.
+ *
+ * @param times How often the object is repeated. null means its repeated indefinitely
+ */
+fun <T : Any> T.repeat(times: Int? = null): Sequence<T> = sequence {
+    var count = 0
+    while (times == null || count++ < times) yield(this@repeat)
+}
