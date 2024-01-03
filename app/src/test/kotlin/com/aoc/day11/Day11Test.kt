@@ -26,8 +26,12 @@ class Day11Test {
 
     @Test
     fun test1() {
-        part1(input)
+        part1(input, 1_000_000)
     }
 
+    @Test
+    fun test_part2() {
+        part1(testStr, 100)
+    }
 }
 

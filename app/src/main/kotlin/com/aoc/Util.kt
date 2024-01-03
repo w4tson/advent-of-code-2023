@@ -158,11 +158,13 @@ fun <T> kotlin.collections.ArrayDeque<T>.removeLast(n : Int) : List<T> {
     return (0 until n ).map { this.removeLast() }.toList().reversed()
 }
 
-class Coord(val x: Int, val y : Int) {
+class Coord(val x: Long, val y: Long) {
 
     companion object {
         val origin = Coord(0, 0)
     }
+
+    constructor(x: Int, y: Int) : this(x.toLong(), y.toLong())
 
     fun getAdjacent(width: Int = Int.MAX_VALUE, height: Int = Int.MAX_VALUE, allowNegative: Boolean = true) : List<Coord> {
         return listOf(Coord(x,y-1),Coord(x+1,y),Coord(x,y+1),Coord(x-1,y))
@@ -173,13 +175,13 @@ class Coord(val x: Int, val y : Int) {
         val xDist = (x - other.x).absoluteValue
         val yDist = (y - other.y).absoluteValue
         val manhattanDistance = xDist + yDist
-        return this == other || manhattanDistance == 1
+        return this == other || manhattanDistance == 1L
     }
 
     fun isOneSquareAway(other: Coord) : Boolean {
         val xDist = (x - other.x).absoluteValue
         val yDist = (y - other.y).absoluteValue
-        return isOrthogonalTo(other) || (xDist == 1 && yDist == 1)
+        return isOrthogonalTo(other) || (xDist == 1L && yDist == 1L)
     }
 
     fun moveByChar(ch : Char) : Coord = when (ch) {
@@ -192,16 +194,16 @@ class Coord(val x: Int, val y : Int) {
 
     operator fun plus(other : Coord) : Coord = Coord(x + other.x, y + other.y)
     operator fun minus(other : Coord) : Coord = Coord(x - other.x, y - other.y)
-    operator fun component1() : Int = x
-    operator fun component2() : Int = y
+    operator fun component1() : Long = x
+    operator fun component2() : Long = y
 
     fun directionTo(other: Coord): Compass {
         val v = other - this
         return when  {
-            v.x == 0 && v.y < 0 -> NORTH
-            v.x == 0 && v.y > 0 -> SOUTH
-            v.x > 0 && v.y == 0 -> EAST
-            v.x < 0 && v.y == 0 -> WEST
+            v.x == 0L && v.y < 0 -> NORTH
+            v.x == 0L && v.y > 0 -> SOUTH
+            v.x > 0 && v.y == 0L -> EAST
+            v.x < 0 && v.y == 0L -> WEST
             v.x > 0 && v.y < 0 -> NORTH_EAST
             v.x > 0 && v.y > 0 -> SOUTH_EAST
             v.x < 0 && v.y > 0 -> SOUTH_WEST
@@ -253,13 +255,13 @@ class Coord(val x: Int, val y : Int) {
         return listOf(north(), east(), south(), west())
     }
 
-    fun manhattenDistanceTo(other : Coord) : Int {
+    fun manhattenDistanceTo(other : Coord) : Long {
         val xDist = (x - other.x).absoluteValue
         val yDist = (y - other.y).absoluteValue
         return xDist + yDist
     }
 
-    fun allCoordsWithinARadius(r : Int, y: Int) : Pair<Coord, Coord> {
+    fun allCoordsWithinARadius(r : Long, y: Long) : Pair<Coord, Coord> {
         val distanceToY = (this.y - y).absoluteValue
         val minx = x - r
         val maxx = x + r
@@ -284,8 +286,8 @@ class Coord(val x: Int, val y : Int) {
 
     override fun hashCode(): Int {
         var result = x
-        result = 31 * result + y
-        return result
+        result = 31L * result + y
+        return result.toInt()
     }
 
     override fun toString(): String {
