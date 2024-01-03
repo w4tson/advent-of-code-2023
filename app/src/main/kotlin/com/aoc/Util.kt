@@ -211,6 +211,8 @@ class Coord(val x: Int, val y : Int) {
     }
 
     fun north() : Coord = moveBy(NORTH)
+    fun east() : Coord = moveBy(EAST)
+    fun west() : Coord = moveBy(WEST)
     fun south() : Coord = moveBy(SOUTH)
     fun southEast() : Coord = moveBy(SOUTH_EAST)
     fun southWest() : Coord = moveBy(SOUTH_WEST)
@@ -245,6 +247,10 @@ class Coord(val x: Int, val y : Int) {
 
             this + vector
         }
+    }
+
+    fun adjacentCoords() : List<Coord> {
+        return listOf(north(), east(), south(), west())
     }
 
     fun manhattenDistanceTo(other : Coord) : Int {
@@ -296,6 +302,12 @@ enum class Compass {
     NORTH_WEST,
     SOUTH_EAST,
     SOUTH_WEST
+
+
+}
+
+fun fourCompassPoints() : List<Compass> {
+    return listOf(NORTH, EAST, SOUTH, WEST)
 }
 
 fun String.chunkLinesBy(p : (s : String) -> Boolean) : List<String> {
